@@ -12,7 +12,15 @@ class FriendsController extends AbstractController
     public function index(): Response
     {
         return $this->render('friends/index.html.twig', [
-            'controller_name' => 'FriendsController',
+            'name' => 'Angie Duhard'
+        ]);
+    }
+
+    #[Route('/friends/{id}', name: 'app_friends_show')]
+    public function show($id): Response
+    {
+        return $this->render('friends/show.html.twig', [
+            'id' => $id
         ]);
     }
 }
