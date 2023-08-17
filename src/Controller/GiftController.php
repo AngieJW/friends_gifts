@@ -49,4 +49,59 @@ class GiftController extends AbstractController
 
       return $this->redirectToRoute('app_gift');
     }
+
+    #[Route('/gift/update/{name}/{content}', name: 'app_gift.update')]
+    public function updateGift(Request $request, $name, $content): Response
+    {
+      $session = $request->getSession();
+      if ( $session->has('gifts') ) {
+        $gifts = $session->get('gifts');
+        if (isset($gifts[$name])) {
+          $gifts[$name] = $content;
+          $session->set('gifts', $gifts);
+          $this->addFlash('info', "Your gift $name has been updated");
+        } else {
+          $this->addFlash('error', "Your gift $name does not exist");
+        }
+      } else {
+        $this->addFlash('error', 'Your gift list does not exist');
+      }
+
+      return $this->redirectToRoute('app_gift');
+    }
+
+    #[Route('/gift/delete/{name}', name: 'app_gift.delete')]
+    public function deleteGift(Request $request, $name): Response
+    {
+      $session = $request->getSession();
+      if ( $session->has('gifts') ) {
+        $gifts = $session->get('gifts');
+        if (isset($gifts[$name])) {
+          unset($gifts[$name]);
+          $session->set('gifts', $gifts);
+          $this->addFlash('info', "Your gift $name has been deleted");
+        } else {
+          $this->addFlash('error', "Your gift $name does not exist");
+        }
+      } else {
+        $this->addFlash('error', 'Your gift list does not exist');
+      }
+
+      return $this->redirectToRoute('app_gift');
+    }
+
+    #[Route('/gift/reset', name: 'app_gift.reset')]
+    public function resetGift(Request $request): Response
+    {
+      $session = $request->getSession();
+      if ( $session->has('gifts') ) {
+        $session->remove('gifts');
+        $this->addFlash('info', 'Your gift list has been reset');
+      } else {
+        $this->addFlash('error', 'Your gift list does not exist');
+      }
+
+      return $this->redirectToRoute('app_gift');
+    }
+
 }
